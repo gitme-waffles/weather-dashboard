@@ -18,22 +18,23 @@
 
   <div class="row">
     <aside class="col-sm-12 col-md-4 col-lg-3 ">
-      <div class="d-flex justify-content-center">
-        <input id="search" type="text" placeholder="Enter City Name">
+      <form id="form" class="d-flex flex-column justify-content-center">
+        <p>City, Country code</p>
+        <input id="search" type="text" placeholder="Sydney, au">
         <button id="search-button">Search</button>
-      </div>
+      </form>
       <div>
-        <ul>
-          <li>bananas</li>
+        <ul id="prev-search-list">
+          <li>pears</li>
         </ul>
       </div>
     </aside>
     <div class="col-sm-12 col-md-8 col-lg-9">
       <section id="current-forecast">
         <h2 id=""></h2>
-          <p>Temperature: <span>--</span></p>
-          <p>Wind: <span>--</span></p>
-          <p>Humidity: <span>--</span></p>
+          <p>Temperature: <span id="temp-current"></span></p>
+          <p>Wind: <span id="wind-current">--</span></p>
+          <p>Humidity: <span id="hum-current">--</span></p>
           <p>UV Index: <span id="uvi-box">1.02</span></p>
       </section>
       <section id="-week-forecast">
