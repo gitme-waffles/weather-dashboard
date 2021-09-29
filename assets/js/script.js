@@ -17,18 +17,27 @@ function renderCityList(updatedCityArray) {
   }
 }
 
-// store VALID city to local storage
-function saveCitySearch(name, country) {
-  var cityObj = {
-    name: name,
-    country: country
-  }
-
+function getLocalStorage() {
   var storedCityArray = JSON.parse(localStorage.getItem(weatherAppCityList))
 
   if (storedCityArray == null) {
    storedCityArray = [];
-  } 
+  }
+  return storedCityArray;
+}
+
+// store VALID city to local storage
+function saveCitySearch(name, country, coord) {
+    
+  var cityObj = {
+    name: name,
+    country: country,
+    lat: coord.lat,
+    lon: coord.lon
+  }
+
+
+  var storedCityArray = getLocalStorage();
 // no check for max length or duplicates
   storedCityArray.push(cityObj)
   localStorage.setItem(weatherAppCityList, JSON.stringify(storedCityArray))
@@ -45,20 +54,55 @@ function findCity(searchInputVal) {
   })
   .then(function (locRes) {
     console.log(locRes);
-    console.log(locRes['name'],locRes['name'],locRes['sys']['country']);
     
-    saveCitySearch(locRes['name'], locRes['sys']['country']);
+    saveCitySearch(
+      locRes['name'],
+      locRes['sys']['country'],
+      locRes['coord']
+    );
   })
   .catch(function (error) {
     console.error(error);
-  })
+  })    
+    
 }
 
 // render results
 // temp, wind speed, humidity, UV i
-function renderStats(params) {
+// current[humidity], current[temp]
+// wind[speed]
+// 
   
+function renderCurrentStats(params) {
+
 }
+
+function weatherCall() {
+  var storedCityArray = getLocalStorage();
+  var lastCityDeets;
+  if (storedCityArray.length > 0) {
+    lastCityDeets = storedCityArray[storedCityArray.length - 1]
+  } else {
+    console.error("couldn't fetch last valid city")
+    return;
+  }
+  
+  var apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lastCityDeets.lat}&lon=${lastCityDeets.lon}&exclude=hourly,minutely,alerts&units=metric&appid=${apiKey}`
+  fetch(apiUrl)
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (locRes) {
+    renderCurrentStats(locRes);
+    renderForercast()
+  })
+  .catch(function (error) {
+    console.error(error);
+  })
+  
+  //  get coords from local storage
+}
+
 
 // input handler
 function citySearchHandler(event) {
@@ -67,9 +111,11 @@ function citySearchHandler(event) {
     console.error('You need a search input value!'); 
   } else {
     findCity(searchInput.value)
+    weatherCall();
   }
 }
 
 // click event
 submitEl.addEventListener("submit", citySearchHandler) 
 // searchBtn.addEventListener("enter", citySearchHandler) 
+renderCityList(getLocalStorage())
