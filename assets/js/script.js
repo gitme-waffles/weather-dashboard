@@ -2,7 +2,12 @@ var searchInput = document.querySelector("#search")
 var submitEl = document.querySelector("#form")
 var cityList = document.querySelector("#prev-search-list")
 
-// current weather elements
+// current heading El
+var currentDityEl = document.querySelector("#current-city")
+var currentDateEl = document.querySelector("#current-date")
+var currentIconEl = document.querySelector("#current-icon")
+
+// current forecast elements
 var tempEl = document.querySelector("#temp-current")
 var windEl = document.querySelector("#wind-current")
 var humidityEl = document.querySelector("#hum-current")
@@ -10,6 +15,11 @@ var uvEl = document.querySelector("#uvi-box")
 
 var apiKey = 'ffb7e55f593d9cc120525edbd6e94c9e'
 var weatherAppCityList = 'weatherAppCityList';
+
+var currentCity = document.querySelector("#current-city");
+var currentCountry = document.querySelector("#current-country")
+var currentDate = document.querySelector("#current-date");
+var currentIcon = document.querySelector("#current-icon");
 
 // render from local storage
 function renderCityList(updatedCityArray) {
@@ -46,7 +56,7 @@ function saveCitySearch(name, country, coord) {
 
   var storedCityArray = getLocalStorage();
   // var duplicateChecker = storedCityArray.some(function (cityObj2) {return cityObj2.lat === cityObj.lat && cityObj2.lon === cityObj.lon})
-  // check for same city in array by lat && lon before seting to local storage
+  // check for duplicate cities before setting to local storage
   var targetIndex = -1;
   for (i = 0; i < storedCityArray.length; i++) {
     if (storedCityArray[i].lat === cityObj.lat && storedCityArray[i].lon === cityObj.lon) {
@@ -57,13 +67,15 @@ function saveCitySearch(name, country, coord) {
   if (targetIndex >= 0) { 
   storedCityArray.splice(targetIndex, 1);
   }
-  // if (!duplicateChecker) {
-  // }
+  // length check
+  // 
   storedCityArray.push(cityObj)
   localStorage.setItem(weatherAppCityList, JSON.stringify(storedCityArray))
   renderCityList(storedCityArray)
-  // no check for max length or duplicates
+  // no check for max length 
 }
+
+
 
 // API search
 function findCity(searchInputVal) {
@@ -74,29 +86,37 @@ function findCity(searchInputVal) {
     return response.json();
   })
   .then(function (locRes) {
-    console.log(locRes);
+    console.log(locRes['weather'][0]['icon']);
     
     saveCitySearch(
       locRes['name'],
       locRes['sys']['country'],
       locRes['coord']
     );
+      renderCurrentHeading(
+        locRes['name'],
+        locRes['sys']['country'],
+        locRes['dt'],
+        locRes['weather'][0]['icon']
+      );
     weatherCall();
   })
   .catch(function (error) {
     console.error(error);
-    renderCurrentStats
-  })    
-    
+       
+  })        
 }
 
 // render results
-// temp, wind speed, humidity, UV i
-// current[humidity], current[temp]
-// wind[speed]
+
+function renderCurrentHeading(name, country, unix, icon) {
+  currentCity.innerHTML = `${name},`;
+  currentCountry.innerHTML = country;
+  currentDate.innerHTML = moment.unix(unix).format("DD/MMM/YYYY");
+  currentIconEl.setAttribute("src", `http://openweathermap.org/img/wn/${icon}@2x.png`);
+ }
+
 function renderCurrentStats(weatherData) {
-  // main[name] => City name
-  // dt => unix time
   tempEl.innerHTML = weatherData.temp;
   windEl.innerHTML = weatherData.wind_speed;
   humidityEl.innerHTML = weatherData.humidity;
