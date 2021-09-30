@@ -24,6 +24,11 @@ var currentDate = document.querySelector("#current-date");
 var currentIcon = document.querySelector("#current-icon");
 
 // render from local storage
+function recycleList(event) {
+  findCity(event.target.innerHTML)
+  
+}
+
 function renderCityList(updatedCityArray) {
   cityList.innerHTML = ''
   // most recent is start (top) of list
@@ -33,6 +38,7 @@ function renderCityList(updatedCityArray) {
     var li = document.createElement('li');
 
     li.innerHTML = `${tempItem.name}, ${tempItem.country}`;
+    li.addEventListener("click", recycleList);
     cityList.appendChild(li);
   }
 }
@@ -70,11 +76,13 @@ function saveCitySearch(name, country, coord) {
   storedCityArray.splice(targetIndex, 1);
   }
   // length check
-  // 
   storedCityArray.push(cityObj)
+  const maxArrayLength = 8;
+  if (storedCityArray.length > maxArrayLength) {
+  storedCityArray.splice(0, storedCityArray.length - maxArrayLength)
+  }
   localStorage.setItem(weatherAppCityList, JSON.stringify(storedCityArray))
-  renderCityList(storedCityArray)
-  // no check for max length 
+  renderCityList(storedCityArray) 
 }
 
 
@@ -140,11 +148,11 @@ function renderCurrentStats(weatherData) {
 
 }
 function renderForercast(forecastData) {
-
+  weekForecast.innerHTML = ''
     for (i = 1; i < 6; i++) {
       var cardEl = document.createElement('div')
       cardEl.className += 'forecast-card'
-      // TO DO =>> add class
+      
       var dateEl = document.createElement('p')
       dateEl.innerHTML = moment.unix(forecastData[i].dt).format("DD/MMM/YYYY")
       cardEl.appendChild(dateEl)
@@ -168,14 +176,7 @@ function renderForercast(forecastData) {
 
       // add new card to forecast container
       weekForecast.appendChild(cardEl)
-    }
-  // date = [i].dt
-  // dateEl.innerHTML = moment.unix(date).format("DD/MMM/YYYY");
-  // icons = [i].weather.0.icon !! add garbage 
-  //      => .setAttribute("src", `http://openweathermap.org/img/wn/${icon}@2x.png`);
-  // temp = [i].temp.day
-  // wind = [i].wind_speed
-  // humidity = [i].humidity
+    }  
 }
 
 
