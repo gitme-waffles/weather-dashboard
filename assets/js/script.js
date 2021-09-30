@@ -14,6 +14,7 @@ var weatherAppCityList = 'weatherAppCityList';
 // render from local storage
 function renderCityList(updatedCityArray) {
   cityList.innerHTML = ''
+  // most recent is start (top) of list
   for (i = updatedCityArray.length - 1; i >= 0; i--) {
     var tempItem = updatedCityArray[i];
 
@@ -45,6 +46,7 @@ function saveCitySearch(name, country, coord) {
 
   var storedCityArray = getLocalStorage();
   // var duplicateChecker = storedCityArray.some(function (cityObj2) {return cityObj2.lat === cityObj.lat && cityObj2.lon === cityObj.lon})
+  // check for same city in array by lat && lon before seting to local storage
   var targetIndex = -1;
   for (i = 0; i < storedCityArray.length; i++) {
     if (storedCityArray[i].lat === cityObj.lat && storedCityArray[i].lon === cityObj.lon) {
@@ -93,10 +95,12 @@ function findCity(searchInputVal) {
 // current[humidity], current[temp]
 // wind[speed]
 function renderCurrentStats(weatherData) {
+  // main[name] => City name
+  // dt => unix time
   tempEl.innerHTML = weatherData.temp;
   windEl.innerHTML = weatherData.wind_speed;
   humidityEl.innerHTML = weatherData.humidity;
-  // 1-2, 3-5, 8-10
+  // UV index colour changes
   var uvi = weatherData.uvi
   uvEl.innerHTML = uvi;
   uvEl.removeAttribute('class')
@@ -104,12 +108,16 @@ function renderCurrentStats(weatherData) {
       uvEl.classList.add('uvi-box-green')
     } else if (uvi < 6) {
       uvEl.classList.add('uvi-box-yellow')
+    } else if (uvi < 8) {
+      uvEl.classList.add('uvi-box-orange')
     } else if (uvi < 11) {
       uvEl.classList.add('uvi-box-red')
+    } else if (uvi > 10) {
+      uvEl.classList.add('uvi-box-violet')
     }
 
 }
-function renderForercast() {
+function renderForercast(forecastData) {
 
 }
 
@@ -131,13 +139,12 @@ function weatherCall() {
   })
   .then(function (locRes) {
     renderCurrentStats(locRes.current);
-    renderForercast()
+    renderForercast(locRes)
   })
   .catch(function (error) {
     console.error(error);
   })
   
-  //  get coords from local storage
 }
 
 
@@ -153,5 +160,4 @@ function citySearchHandler(event) {
 
 // click event
 submitEl.addEventListener("submit", citySearchHandler) 
-// searchBtn.addEventListener("enter", citySearchHandler) 
 renderCityList(getLocalStorage())

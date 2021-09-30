@@ -9,11 +9,21 @@ header {
     
 }
 
+ul {
+    padding: 0;
+    text-align: center;
+}
+
 li {
     list-style-type: none;
     text-decoration: none;
-    
+    padding: 5px ;
+    margin: 5px 0;
+    border: solid 2px rgb(0, 0, 0);
     border-radius: 2px;
+}
+li:hover {
+    background-color: rgb(111, 111, 231);
 }
 
 #uvi-box {
@@ -21,13 +31,25 @@ li {
     border-radius: 3px;
 }
 
-.uvi-box-red {
-    background-color: crimson;
-}
-.uvi-box-yellow {
-    background-color:darkgoldenrod;
-}
 .uvi-box-green {
     background-color:darkgreen;
+    color: white;
+}
+
+.uvi-box-yellow {
+    background-color:rgb(247, 223, 12);
+}
+
+.uvi-box-orange {
+    background-color: orange;
+}
+
+.uvi-box-red {
+    background-color: crimson;
+    color: white;
+}
+
+.uvi-box-violet {
+    background-color: rgb(148, 0, 148);
     color: white;
 }
