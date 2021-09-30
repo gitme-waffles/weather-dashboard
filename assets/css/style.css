@@ -68,3 +68,15 @@ li:hover {
     background-color: rgb(148, 0, 148);
     color: white;
 }
+
+.forecast-card {
+    background-color: rgb(70, 97, 74);
+    color: rgb(235, 235, 235);
+    border-radius: 3px;
+    margin: 3px;
+}
+
+.forecast-card p {
+    padding: 10px 10px 0px 15px;
+
+}

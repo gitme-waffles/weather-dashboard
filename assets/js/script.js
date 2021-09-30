@@ -8,10 +8,12 @@ var currentDateEl = document.querySelector("#current-date")
 var currentIconEl = document.querySelector("#current-icon")
 
 // current forecast elements
-var tempEl = document.querySelector("#temp-current")
-var windEl = document.querySelector("#wind-current")
-var humidityEl = document.querySelector("#hum-current")
+var currentTempEl = document.querySelector("#temp-current")
+var currentWindEl = document.querySelector("#wind-current")
+var currentHumidityEl = document.querySelector("#hum-current")
 var uvEl = document.querySelector("#uvi-box")
+
+var weekForecast = document.querySelector("#week-forecast")
 
 var apiKey = 'ffb7e55f593d9cc120525edbd6e94c9e'
 var weatherAppCityList = 'weatherAppCityList';
@@ -117,9 +119,9 @@ function renderCurrentHeading(name, country, unix, icon) {
  }
 
 function renderCurrentStats(weatherData) {
-  tempEl.innerHTML = weatherData.temp;
-  windEl.innerHTML = weatherData.wind_speed;
-  humidityEl.innerHTML = weatherData.humidity;
+  currentTempEl.innerHTML = weatherData.temp;
+  currentWindEl.innerHTML = weatherData.wind_speed;
+  currentHumidityEl.innerHTML = weatherData.humidity;
   // UV index colour changes
   var uvi = weatherData.uvi
   uvEl.innerHTML = uvi;
@@ -139,6 +141,41 @@ function renderCurrentStats(weatherData) {
 }
 function renderForercast(forecastData) {
 
+    for (i = 1; i < 6; i++) {
+      var cardEl = document.createElement('div')
+      cardEl.className += 'forecast-card'
+      // TO DO =>> add class
+      var dateEl = document.createElement('p')
+      dateEl.innerHTML = moment.unix(forecastData[i].dt).format("DD/MMM/YYYY")
+      cardEl.appendChild(dateEl)
+
+      var iconEl = document.createElement('img')
+      var icon = forecastData[i].weather[0].icon
+      iconEl.setAttribute("src", `http://openweathermap.org/img/wn/${icon}.png`); 
+      cardEl.appendChild(iconEl)
+
+      var tempEl = document.createElement('p')
+      tempEl.innerHTML = `Temperature: ${forecastData[i].temp.day}&#176;C`
+      cardEl.appendChild(tempEl)
+
+      var windEl = document.createElement('p')
+      windEl.innerHTML = `Wind speed: ${forecastData[i].wind_speed}m/s`
+      cardEl.appendChild(windEl)
+
+      var humidityEl = document.createElement('p')
+      humidityEl.innerHTML = `Humidity: ${forecastData[i].humidity}%`
+      cardEl.appendChild(humidityEl)
+
+      // add new card to forecast container
+      weekForecast.appendChild(cardEl)
+    }
+  // date = [i].dt
+  // dateEl.innerHTML = moment.unix(date).format("DD/MMM/YYYY");
+  // icons = [i].weather.0.icon !! add garbage 
+  //      => .setAttribute("src", `http://openweathermap.org/img/wn/${icon}@2x.png`);
+  // temp = [i].temp.day
+  // wind = [i].wind_speed
+  // humidity = [i].humidity
 }
 
 
@@ -159,7 +196,8 @@ function weatherCall() {
   })
   .then(function (locRes) {
     renderCurrentStats(locRes.current);
-    renderForercast(locRes)
+    console.log(locRes)
+    renderForercast(locRes.daily)
   })
   .catch(function (error) {
     console.error(error);
