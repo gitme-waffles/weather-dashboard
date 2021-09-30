@@ -9,6 +9,13 @@ header {
     
 }
 
+button {
+    margin: 5px;
+    border-radius: 15px;
+    background-color: cornflowerblue;
+    color: white;
+}
+
 ul {
     padding: 0;
     text-align: center;
@@ -21,9 +28,17 @@ li {
     margin: 5px 0;
     border: solid 2px rgb(0, 0, 0);
     border-radius: 2px;
+    background-color: rgb(207, 240, 250);
 }
 li:hover {
     background-color: rgb(111, 111, 231);
+    color: rgb(252, 249, 249);
+}
+
+#current-forecast {
+    padding: 10px;
+    border: solid 2px black;
+    border-radius: 3px;
 }
 
 #uvi-box {
