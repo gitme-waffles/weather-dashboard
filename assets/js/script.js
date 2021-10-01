@@ -13,6 +13,7 @@ var currentWindEl = document.querySelector("#wind-current")
 var currentHumidityEl = document.querySelector("#hum-current")
 var uvEl = document.querySelector("#uvi-box")
 
+// week forecast elements
 var weekForecast = document.querySelector("#week-forecast")
 
 var apiKey = 'ffb7e55f593d9cc120525edbd6e94c9e'
