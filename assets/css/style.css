@@ -30,6 +30,7 @@ li {
     border-radius: 2px;
     background-color: rgb(207, 240, 250);
 }
+
 li:hover {
     background-color: rgb(111, 111, 231);
     color: rgb(252, 249, 249);
@@ -78,5 +79,4 @@ li:hover {
 
 .forecast-card p {
     padding: 10px 10px 0px 15px;
-
 }

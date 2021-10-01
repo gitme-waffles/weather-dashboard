@@ -23,10 +23,9 @@ var currentCountry = document.querySelector("#current-country")
 var currentDate = document.querySelector("#current-date");
 var currentIcon = document.querySelector("#current-icon");
 
-// render from local storage
+// render from list of saved cities (local storage)
 function recycleList(event) {
-  findCity(event.target.innerHTML)
-  
+  findCity(event.target.innerHTML)  
 }
 
 function renderCityList(updatedCityArray) {
@@ -34,7 +33,6 @@ function renderCityList(updatedCityArray) {
   // most recent is start (top) of list
   for (i = updatedCityArray.length - 1; i >= 0; i--) {
     var tempItem = updatedCityArray[i];
-
     var li = document.createElement('li');
 
     li.innerHTML = `${tempItem.name}, ${tempItem.country}`;
@@ -53,8 +51,7 @@ function getLocalStorage() {
 }
 
 // store VALID city to local storage
-function saveCitySearch(name, country, coord) {
-    
+function saveCitySearch(name, country, coord) {    
   var cityObj = {
     name: name,
     country: country,
@@ -63,7 +60,6 @@ function saveCitySearch(name, country, coord) {
   }
 
   var storedCityArray = getLocalStorage();
-  // var duplicateChecker = storedCityArray.some(function (cityObj2) {return cityObj2.lat === cityObj.lat && cityObj2.lon === cityObj.lon})
   // check for duplicate cities before setting to local storage
   var targetIndex = -1;
   for (i = 0; i < storedCityArray.length; i++) {
@@ -85,9 +81,7 @@ function saveCitySearch(name, country, coord) {
   renderCityList(storedCityArray) 
 }
 
-
-
-// API search
+// API search for city coords by input 
 function findCity(searchInputVal) {
   var apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${searchInputVal}&units=metric&appid=${apiKey}`
   
@@ -95,9 +89,7 @@ function findCity(searchInputVal) {
   .then(function (response) {
     return response.json();
   })
-  .then(function (locRes) {
-    console.log(locRes['weather'][0]['icon']);
-    
+  .then(function (locRes) {  
     saveCitySearch(
       locRes['name'],
       locRes['sys']['country'],
@@ -118,13 +110,12 @@ function findCity(searchInputVal) {
 }
 
 // render results
-
 function renderCurrentHeading(name, country, unix, icon) {
   currentCity.innerHTML = `${name},`;
   currentCountry.innerHTML = country;
   currentDate.innerHTML = moment.unix(unix).format("DD/MMM/YYYY");
   currentIconEl.setAttribute("src", `http://openweathermap.org/img/wn/${icon}@2x.png`);
- }
+}
 
 function renderCurrentStats(weatherData) {
   currentTempEl.innerHTML = weatherData.temp;
@@ -134,51 +125,50 @@ function renderCurrentStats(weatherData) {
   var uvi = weatherData.uvi
   uvEl.innerHTML = uvi;
   uvEl.removeAttribute('class')
-    if (uvi < 3) {
+  if (uvi < 3) {
       uvEl.classList.add('uvi-box-green')
-    } else if (uvi < 6) {
-      uvEl.classList.add('uvi-box-yellow')
-    } else if (uvi < 8) {
-      uvEl.classList.add('uvi-box-orange')
-    } else if (uvi < 11) {
-      uvEl.classList.add('uvi-box-red')
-    } else if (uvi > 10) {
-      uvEl.classList.add('uvi-box-violet')
-    }
-
+  } else if (uvi < 6) {
+    uvEl.classList.add('uvi-box-yellow')
+  } else if (uvi < 8) {
+    uvEl.classList.add('uvi-box-orange')
+  } else if (uvi < 11) {
+    uvEl.classList.add('uvi-box-red')
+  } else if (uvi > 10) {
+    uvEl.classList.add('uvi-box-violet')
+  }
 }
+
 function renderForercast(forecastData) {
   weekForecast.innerHTML = ''
-    for (i = 1; i < 6; i++) {
-      var cardEl = document.createElement('div')
-      cardEl.className += 'forecast-card'
-      
-      var dateEl = document.createElement('p')
-      dateEl.innerHTML = moment.unix(forecastData[i].dt).format("DD/MMM/YYYY")
-      cardEl.appendChild(dateEl)
+  for (i = 1; i < 6; i++) {
+  var cardEl = document.createElement('div')
+  cardEl.className += 'forecast-card'
+    
+  var dateEl = document.createElement('p')
+  dateEl.innerHTML = moment.unix(forecastData[i].dt).format("DD/MMM/YYYY")
+  cardEl.appendChild(dateEl)
 
-      var iconEl = document.createElement('img')
-      var icon = forecastData[i].weather[0].icon
-      iconEl.setAttribute("src", `http://openweathermap.org/img/wn/${icon}.png`); 
-      cardEl.appendChild(iconEl)
+  var iconEl = document.createElement('img')
+  var icon = forecastData[i].weather[0].icon
+  iconEl.setAttribute("src", `http://openweathermap.org/img/wn/${icon}.png`); 
+  cardEl.appendChild(iconEl)
 
-      var tempEl = document.createElement('p')
-      tempEl.innerHTML = `Temperature: ${forecastData[i].temp.day}&#176;C`
-      cardEl.appendChild(tempEl)
+  var tempEl = document.createElement('p')
+  tempEl.innerHTML = `Temperature: ${forecastData[i].temp.day}&#176;C`
+  cardEl.appendChild(tempEl)
 
-      var windEl = document.createElement('p')
-      windEl.innerHTML = `Wind speed: ${forecastData[i].wind_speed}m/s`
-      cardEl.appendChild(windEl)
+  var windEl = document.createElement('p')
+  windEl.innerHTML = `Wind speed: ${forecastData[i].wind_speed}m/s`
+  cardEl.appendChild(windEl)
 
-      var humidityEl = document.createElement('p')
-      humidityEl.innerHTML = `Humidity: ${forecastData[i].humidity}%`
-      cardEl.appendChild(humidityEl)
+  var humidityEl = document.createElement('p')
+  humidityEl.innerHTML = `Humidity: ${forecastData[i].humidity}%`
+  cardEl.appendChild(humidityEl)
 
-      // add new card to forecast container
-      weekForecast.appendChild(cardEl)
-    }  
+  // add new card to the weekForecast container
+  weekForecast.appendChild(cardEl)
+ }  
 }
-
 
 function weatherCall() {
   var storedCityArray = getLocalStorage();
@@ -202,10 +192,8 @@ function weatherCall() {
   })
   .catch(function (error) {
     console.error(error);
-  })
-  
+  })  
 }
-
 
 // input handler
 function citySearchHandler(event) {
@@ -218,5 +206,6 @@ function citySearchHandler(event) {
 }
 
 // click event
-submitEl.addEventListener("submit", citySearchHandler) 
+submitEl.addEventListener("submit", citySearchHandler)
+// show list of searched cities when run 
 renderCityList(getLocalStorage())
