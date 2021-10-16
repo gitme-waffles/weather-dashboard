@@ -80,3 +80,26 @@ li:hover {
 .forecast-card p {
     padding: 10px 10px 0px 15px;
 }
+
+/* modal */
+#modal {
+    background-color: rgb(40, 40, 40);
+    color: white;
+    height: 220px;
+}
+
+#modalField {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#modal p {
+    margin: 0;
+    text-align: center;
+}
+
+.hide {
+    display: none;
+}

@@ -17,12 +17,12 @@ var uvEl = document.querySelector("#uvi-box")
 var weekForecast = document.querySelector("#week-forecast")
 
 var apiKey = 'ffb7e55f593d9cc120525edbd6e94c9e'
-var weatherAppCityList = 'weatherAppCityList';
+var weatherAppCityList = 'weatherAppCityList'
 
-var currentCity = document.querySelector("#current-city");
+var currentCity = document.querySelector("#current-city")
 var currentCountry = document.querySelector("#current-country")
-var currentDate = document.querySelector("#current-date");
-var currentIcon = document.querySelector("#current-icon");
+var currentDate = document.querySelector("#current-date")
+var currentIcon = document.querySelector("#current-icon")
 
 // render from list of saved cities (local storage)
 function recycleList(event) {
@@ -82,30 +82,67 @@ function saveCitySearch(name, country, coord) {
   renderCityList(storedCityArray) 
 }
 
+// var tempEl = document.createElement('p')
+// tempEl.innerHTML = `Temperature: ${forecastData[i].temp.day}&#176;C`
+// cardEl.appendChild(tempEl)
+
+function errorModal(error){
+  // create El
+  $('#modalField').html('')
+  console.log(error)
+  var errorEl =  $("<p>")
+  
+  // set innerHTML with a value =>> error
+  if (error == 404) {
+    errorEl.html(`Error ${error} <br /> Could not find location`)
+
+  } else {
+    errorEl.html(`Error ${error}`)
+  }
+  
+  $('#modalField').append(errorEl)
+
+  // run modal remove $(".hide")
+  $('#modal').removeClass("hide")
+  $('#modal').modal({
+    fadeDuration: 100
+  });
+}
+
 // API search for city coords by input 
 function findCity(searchInputVal) {
   var apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${searchInputVal}&units=metric&appid=${apiKey}`
   
   fetch(apiUrl)
   .then(function (response) {
+    console.log(response)
+    if (response.status != 200) {
+      errorModal(response.status)
+    }
     return response.json();
   })
   .then(function (locRes) {  
+    console.log(locRes.cod)
+    // if (locRes.cod != 200) {}
+      // errorModal(locRes)
+    
     saveCitySearch(
       locRes['name'],
       locRes['sys']['country'],
       locRes['coord']
-    );
+    ),
       renderCurrentHeading(
         locRes['name'],
         locRes['sys']['country'],
         locRes['dt'],
         locRes['weather'][0]['icon']
-      );
-    weatherCall();
+      ),
+    weatherCall()
   })
   .catch(function (error) {
     console.error(error);
+    // if (error == "reading 'country")
+    // errorModal(error);
        
   })        
 }
@@ -200,7 +237,7 @@ function weatherCall() {
 function citySearchHandler(event) {
   event.preventDefault();
   if (!searchInput.value)  {
-    console.error('You need a search input value!'); 
+    errorModal('Search is empty!'); 
   } else {
     findCity(searchInput.value)
   }
